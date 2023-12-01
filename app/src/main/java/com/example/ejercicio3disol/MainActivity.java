@@ -16,40 +16,43 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final List<Integer> images;
+    private List<SolarImage> solarImageList;
+
     private RecyclerView recyclerView;
 
     private androidx.appcompat.widget.Toolbar toolbar;
-    {
-        images = new ArrayList<>();
-        images.add(R.drawable.corona_solar);
-        images.add(R.drawable.erupcionsolar);
-        images.add(R.drawable.espiculas);
-        images.add(R.drawable.filamentos);
-        images.add(R.drawable.magnetosfera);
-        images.add(R.drawable.manchasolar);
-    }
 
     ImageButton opciones;
+
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        solarImageList = new ArrayList<>();
+        solarImageList.add(new SolarImage(R.drawable.corona_solar, "Corona"));
+        solarImageList.add(new SolarImage(R.drawable.erupcionsolar, "Erupcion"));
+        solarImageList.add(new SolarImage(R.drawable.espiculas, "Espiculas"));
+        solarImageList.add(new SolarImage(R.drawable.filamentos, "Filamentos"));
+        solarImageList.add(new SolarImage(R.drawable.magnetosfera, "Magnetosfera"));
+        solarImageList.add(new SolarImage(R.drawable.manchasolar, "Mancha"));
+
         opciones = findViewById(R.id.opciones);
         opciones.setOnClickListener(this::lanzarOpciones);
 
         recyclerView = findViewById(R.id.recyclerView);
-        ItemAdapter adapter = new ItemAdapter(this,images);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        ItemAdapter adapter = new ItemAdapter(this,solarImageList);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2 ));
         recyclerView.setAdapter(adapter);
     }
 
 
     public void lanzarOpciones(View view) {
         Intent intent = new Intent();
-        intent.setClass(this, MainActivity.class);  //Cambiar a opciones cuando este creada xd
+        intent.setClass(this, CompararPlanetas.class);
         startActivity(intent);
     }
 }

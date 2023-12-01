@@ -1,6 +1,7 @@
 package com.example.ejercicio3disol;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,13 +17,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
 
     private final Context context;
 
-    private List<Integer> imageList;
+    private List<SolarImage> solarImages;
 
     private androidx.appcompat.widget.Toolbar toolbar;
 
-    public ItemAdapter(Context context, List<Integer> imageList) {
+    public ItemAdapter(Context context, List<SolarImage> solarImages) {
         this.context = context;
-        this.imageList = imageList;
+        this.solarImages = solarImages;
     }
 
     @NonNull
@@ -34,19 +35,36 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder,final int position) {
-        int imageId = imageList.get(position);
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        int imageId = solarImages.get(position).getImageResourceId();
 
 
         holder.imagen.setImageResource(imageId);
 
+        Resources res = holder.itemView.getContext().getResources();
+        String nombre = res.getResourceEntryName(solarImages.get(position).getImageResourceId());
         Toolbar toolbar =  holder.itemView.findViewById(R.id.toolbarCardView);
-        toolbar.setTitle(imageList.get(position).toString());
+        toolbar.setTitle(solarImages.get(position).toString());
 
         toolbar.inflateMenu(R.menu.toolbarcardview);
+        toolbar.setTitle(nombre);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+
+
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.copiar){
+                    SolarImage copiedImage = solarImages.get(position);
+                    solarImages.add(position, copiedImage); // Copiar el ítem
+                    notifyItemInserted(position);
+                    return true;
+                }else if (itemId == R.id.borrar){
+                    // Acción para eliminar el ítem
+                    solarImages.remove(position);
+                    notifyItemRemoved(position);
+                    return true;
+                }
                 return false;
             }
         });
@@ -54,6 +72,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder>{
 
     @Override
     public int getItemCount() {
-        return imageList != null ? imageList.size() : 0;
+        return solarImages != null ? solarImages.size() : 0;
     }
 }
